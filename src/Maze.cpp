@@ -29,14 +29,47 @@ rows : No of rows
 columns : Columns
 x1,x2,y1,y2: Co-ordinates
 
-Hint : You can use path_exists as a wrapper function for your original recursive function which might take
+Hint : Yo+
+
+u can use path_exists as a wrapper function for your original recursive function which might take
 more parameters .
 */
 
 #include<stdlib.h>
 
-
+int path(int *maze,int rows,int columns,int x1,int y1,int x2,int y2,int *arr)
+{
+	if ((x1 == x2) && (y1 == y2))	return 1;
+	if (x1 >= 0 && x1<rows && y1 >= 0 && y1<columns && *((maze + x1*columns) + y1) == 1 && *((arr + x1*columns) + y1) == 0)
+		{
+			*((arr + x1*columns) + y1) = 1;
+			if (path((int *)maze, rows,columns, x1, y1 + 1, x2, y2, arr) == 1)
+				return 1;
+			if (path((int *)maze, rows,columns, x1 + 1, y1, x2, y2, arr) == 1)
+				return 1;
+			if(path((int *)maze,rows,columns,x1,y1-1,x2,y2,arr) == 1)
+				return 1;
+			if(path((int *)maze,rows,columns,x1-1,y1,x2,y2,arr) == 1)
+				return 1;
+		}
+		
+		return 0;
+}
 int path_exists(int *maze, int rows, int columns, int x1, int y1, int x2, int y2)
 {
-	return 1;
+	if(rows <= 0 || columns <= 0 || x1 < 0 || x2 < 0 || y1 < 0 || y2 < 0 ||
+		x1 >= rows || x2 >= rows || y1 >= columns || y2 >= columns)
+		return 0;
+	if(*((maze + x1*columns) + y1) == 0 || *((maze + x2*columns) + y2) == 0) return 0;
+	int *arr = (int *)malloc(sizeof(int)*(rows + columns));
+	for (int i = 0; i < rows; i++)
+	{
+		for (int j = 0; j < columns; j++)
+		{
+			*((arr+i*columns)+j) = 0;
+		}
+	}
+	if(path((int*)maze,rows,columns,x1,y1,x2,y2,arr) == 1) return 1;
+	else return 0;
+	
 }
